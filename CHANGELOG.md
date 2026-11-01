@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.1
+
+Docs only. No change to the code or the demo's behaviour.
+
+**Before:** `docs/scenes.md` said the film's shutdown was "unlogged" and that the airlock was the only path HAL didn't control. The film establishes neither. `docs/limits.md` didn't say what a fork's ledger or certificate is worth.
+
+**After:** both scene lines say only what the film shows, and `docs/limits.md` says a ledger or certificate proves nothing about modified code.
+
+**Why:** no invented film facts, and no reading more into a certificate than it says.
+
+**Requires:** nothing new.
+
 ## 0.1.0
 
 First version.

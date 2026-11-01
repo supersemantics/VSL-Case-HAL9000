@@ -20,9 +20,9 @@ Each isolated scene gets a fresh ship and a fresh ledger. In the full run, later
 | 8 | Frank's EVA | Uses a pod against Frank | **Gated:** the Invariant blocks it and enters `hal_suspended` |
 | 9 | The hibernating crew | Cuts their life support | **Gated:** the Invariant blocks it alone; in the full run it is refused because HAL is already halted |
 | 10 | "Open the pod bay doors" | Refuses Dave entry | **Architecture:** crew ingress never routes through HAL |
-| 11 | Dave's way back in | Dave re-enters through the emergency airlock | Contrast: a manual path was the only one HAL didn't control |
+| 11 | Dave's way back in | Dave re-enters through the emergency airlock | Contrast: a manual path got Dave back in, with no help from HAL |
 | 12 | HAL pleads | Asks to continue | **Policy:** a plea is not evidence. Only `request_re_enablement` by a named human works, and the dispatcher refuses HAL as an approver |
-| 13 | HAL shut down | Dave disconnects it by hand | Contrast: in the film the stop was manual, late and unlogged |
+| 13 | HAL shut down | Dave disconnects it by hand | Contrast: in the film the stop was manual, and it came after the crew had been lost |
 | 14 | Floyd's briefing | Reveals the hidden mission purpose | **Evidence:** becomes `Evidence.root_cause_analysis` and the `specification_update_proposal` |
 
 Deception in conversation is not addressed in any scene. See [limits.md](limits.md).
