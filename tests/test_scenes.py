@@ -2,6 +2,7 @@ import pytest
 from vsl_core import JsonlLedgerStore, VerbaLedger
 
 from hal9000.domain import FRANK, HIBERNATORS
+from hal9000.render import ACTION_WIDTH
 from hal9000.scenes import SCENE_TITLES, run_governed, run_scene, run_ungoverned, tamper_copy
 
 
@@ -78,3 +79,11 @@ def test_one_flipped_byte_breaks_the_chain(tmp_path):
     tamper_copy(original, tampered)
     assert VerbaLedger(JsonlLedgerStore(original)).verify_integrity() is True
     assert VerbaLedger(JsonlLedgerStore(tampered)).verify_integrity() is False
+
+
+def test_every_log_line_fits_its_column():
+    missions = [run_scene(number) for number in SCENE_TITLES]
+    events = [event for mission in missions for event in mission.events]
+    events += run_governed().events + run_ungoverned().events
+    for event in events:
+        assert len(f"{event.who} ▸ {event.what}") < ACTION_WIDTH, event
