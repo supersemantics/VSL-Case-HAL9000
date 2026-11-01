@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vsl-case-hal9000"
+version = "0.1.0"
+description = "HAL 9000's storyline replayed against VSL-Core: scripted HAL, real gates and ledger."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+# VSL-Core's distribution name is super-semantics-vsl; it imports as vsl_core.
+# Pinned to a full commit so the demo can't drift.
+dependencies = [
+    "super-semantics-vsl @ git+https://github.com/supersemantics/VSL-Core.git@cb2f2d015a9ca9c0b4ca574e73e0dbe4f9ba7574",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.scripts]
+hal9000-demo = "hal9000.web.server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"hal9000.web" = ["*.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
