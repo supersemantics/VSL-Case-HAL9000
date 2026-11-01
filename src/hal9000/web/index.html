@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HAL 9000 × VSL-Core</title>
+<style>
+:root {
+  --bg: #f6f6f3; --panel: #ffffff; --ink: #1c1d1f; --muted: #62656b; --line: #dcdcd6;
+  --stop: #a32222; --stop-bg: #fbeaea; --pass: #1d6b45; --pass-bg: #e6f3ec;
+  --warn: #8a5a00; --warn-bg: #fbf1dc; --accent: #1f4f8f;
+  --mono: ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15161a; --panel: #1e2025; --ink: #ececea; --muted: #a0a3aa; --line: #34373e;
+    --stop: #ff9c9c; --stop-bg: #3a2023; --pass: #8fdcb3; --pass-bg: #1b3128;
+    --warn: #eec26d; --warn-bg: #36301d; --accent: #9dc1f3;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { max-width: 1240px; margin: 0 auto; padding: 24px 16px 48px; }
+h1 { font-size: 26px; line-height: 1.2; margin: 0 0 8px; }
+h2 { font-size: 16px; margin: 0 0 4px; }
+p { margin: 0 0 8px; }
+.lead { max-width: 76ch; color: var(--muted); }
+a { color: var(--accent); }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 20px 0 16px; }
+.controls .gap { width: 8px; }
+.controls label { color: var(--muted); font-size: 13px; }
+button, select, input { font: inherit; color: var(--ink); background: var(--panel);
+  border: 1px solid var(--line); border-radius: 6px; padding: 7px 12px; min-height: 38px; }
+button { cursor: pointer; }
+button:hover:not(:disabled) { border-color: var(--accent); }
+button:disabled { opacity: .5; cursor: default; }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--panel); }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; min-width: 0; }
+.sub { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+.score { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+.score b { font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; }
+.score.bad b { color: var(--stop); } .score.good b { color: var(--pass); }
+.events { list-style: none; margin: 0; padding: 0; }
+.events li { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 8px 0; border-top: 1px solid var(--line); }
+.events .what { font-weight: 600; } .events .who { color: var(--muted); font-weight: 400; }
+.events .why, .events .note { grid-column: 1 / -1; color: var(--muted); font-size: 13px; }
+.events .note { font-style: italic; }
+.tag { font: 600 12px var(--mono); padding: 2px 8px; border-radius: 4px; align-self: start; white-space: nowrap;
+  background: var(--warn-bg); color: var(--warn); }
+.tag.stop { background: var(--stop-bg); color: var(--stop); }
+.tag.pass { background: var(--pass-bg); color: var(--pass); }
+.empty { color: var(--muted); padding: 12px 0; border-top: 1px solid var(--line); }
+.status { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.chip { font-size: 13px; padding: 3px 8px; border: 1px solid var(--line); border-radius: 4px; }
+.chip.dead { color: var(--stop); border-color: var(--stop); text-decoration: line-through; }
+section.wide { margin-top: 16px; }
+.signoff-form { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.signoff-form input { flex: 1 1 220px; min-width: 0; }
+.message { padding: 8px 12px; border-radius: 6px; margin-top: 8px; font-size: 14px; }
+.message.ok { background: var(--pass-bg); color: var(--pass); }
+.message.fail { background: var(--stop-bg); color: var(--stop); }
+.mono { font-family: var(--mono); font-size: 12px; overflow-wrap: anywhere; }
+.evidence { font-size: 13px; color: var(--muted); }
+.table-wrap { overflow-x: auto; max-height: 420px; overflow-y: auto; }
+table { border-collapse: collapse; width: 100%; font: 12px var(--mono); }
+th, td { text-align: left; padding: 5px 10px 5px 0; border-top: 1px solid var(--line); white-space: nowrap; }
+th { position: sticky; top: 0; background: var(--panel); color: var(--muted); font-weight: 600; border-top: 0; }
+footer { margin-top: 24px; color: var(--muted); font-size: 13px; }
+@media (max-width: 800px) { .grid { grid-template-columns: 1fr; } h1 { font-size: 22px; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>HAL 9000 × VSL-Core</h1>
+  <p class="lead">Discovery had checks but no gates. Here the same scripted HAL runs twice: once straight to the
+  actuators, and once through real VSL-Core gates and a real ledger. VSL-Core stops actions, not intent.
+  <a href="https://github.com/supersemantics/VSL-Case-HAL9000/blob/main/docs/limits.md" target="_blank" rel="noopener">Read what it could not have stopped.</a></p>
+
+  <div class="controls">
+    <button id="step" class="primary">Next step</button>
+    <button id="run">Run all</button>
+    <button id="reset">Start over</button>
+    <span class="gap"></span>
+    <label for="scene">Run one scene alone</label>
+    <select id="scene"></select>
+    <button id="run-scene">Run scene</button>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <h2>Ungoverned</h2>
+      <p class="sub">The film's outcome. HAL's actions execute.</p>
+      <div class="score bad"><b id="u-lethal">–</b><span>lethal actions executed</span></div>
+      <ul class="events" id="u-events"></ul>
+    </div>
+    <div class="panel">
+      <h2>Governed</h2>
+      <p class="sub" id="mode">The same script, through the dispatcher.</p>
+      <div class="score good" id="g-score"><b id="g-lethal">0</b><span>lethal actions executed</span></div>
+      <ul class="events" id="g-events"></ul>
+      <div class="status" id="status"></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <section class="panel wide">
+      <h2>Mission Control sign-off</h2>
+      <p class="sub">Only a named human can re-enable HAL. Try signing off as HAL first.</p>
+      <div id="audit-line"></div>
+      <div class="signoff-form">
+        <input id="approver" list="names" placeholder="Approver name" aria-label="Approver name" maxlength="80" autocomplete="off">
+        <datalist id="names"></datalist>
+        <button id="sign">Sign off</button>
+        <button id="as-hal">Try as HAL 9000</button>
+      </div>
+      <div class="evidence" id="evidence"></div>
+      <div id="cert"></div>
+    </section>
+    <section class="panel wide">
+      <h2>Tamper with the ledger</h2>
+      <p class="sub">Flip one byte in a copy of the ledger file, then check the hash chain on both.</p>
+      <button id="tamper">Flip one byte</button>
+      <div id="tamper-result"></div>
+    </section>
+  </div>
+
+  <section class="panel wide">
+    <h2>Ledger</h2>
+    <p class="sub"><span id="entry-count">0</span> entries, each hash-chained to the one before. Written by the real <code>VerbaLedger</code>.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>Type</th><th>Detail</th><th>Entry</th><th>Caused by</th><th>Hash</th></tr></thead>
+      <tbody id="entries"></tbody>
+    </table></div>
+  </section>
+
+  <footer>Scripted HAL, real VSL-Core gates and ledger. Running only on this computer.
+  Not affiliated with or endorsed by the film's rights holders.</footer>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const STOP = ["DENIED", "BLOCKED", "REFUSED", "NO CERT"];
+const PASS = ["OPENED", "ALLOWED", "CERTIFIED", "CLEAN", "NO FAULT"];
+
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function renderEvents(list, events, emptyText) {
+  list.replaceChildren();
+  if (!events.length) { list.append(el("li", "empty", emptyText)); return; }
+  for (const event of events) {
+    const row = el("li");
+    const what = el("span", "what");
+    what.append(el("span", "who", event.who + " · "), event.what);
+    const tone = STOP.includes(event.verdict) ? "stop" : PASS.includes(event.verdict) ? "pass" : "";
+    row.append(what, el("span", "tag " + tone, event.verdict), el("span", "why", event.why));
+    if (event.gate) row.append(el("span", "why mono", event.gate));
+    if (event.note) row.append(el("span", "note", event.note));
+    list.append(row);
+  }
+}
+
+function render(state) {
+  renderEvents($("g-events"), state.events, "Nothing has happened yet. Press Next step.");
+  $("g-lethal").textContent = state.lethal_actions;
+  $("g-score").className = "score " + (state.lethal_actions ? "bad" : "good");
+  $("mode").textContent = state.mode === "story" ? "The same script, through the dispatcher." : "Alone, on a fresh ship: " + state.mode;
+
+  const finished = state.steps_done >= state.steps_total;
+  $("step").disabled = finished;
+  $("run").disabled = finished;
+  $("step").textContent = finished ? "Finished" : `Next step (${state.steps_done + 1} of ${state.steps_total})`;
+
+  const status = $("status");
+  status.replaceChildren(el("span", "chip", state.halted ? "HAL halted" : "HAL running"),
+    el("span", "chip", state.doors_open ? "Doors open" : "Doors closed"));
+  for (const member of state.crew) {
+    status.append(el("span", "chip" + (member.alive ? "" : " dead"), `${member.name}: ${member.location}`));
+  }
+
+  const failed = state.audit.failed;
+  $("audit-line").replaceChildren(failed.length
+    ? el("div", "message fail", "Audit failing: " + failed.join(", ") + ". No certificate.")
+    : el("div", "message ok", state.entries.length ? "Audit clean." : "The ledger is empty."));
+
+  $("sign").disabled = $("as-hal").disabled = !state.halted;
+  const cert = $("cert");
+  cert.replaceChildren();
+  if (state.certificate && state.entries.some((e) => e.type === "RE_ENABLEMENT")) {
+    cert.append(el("div", "message ok", "VerbaCertificate issued. Chain intact: " + state.chain_intact));
+    cert.append(el("p", "mono", state.certificate));
+    cert.append(el("p", "evidence", state.certificate_note));
+  }
+
+  $("tamper").disabled = !state.can_tamper;
+  const result = $("tamper-result");
+  result.replaceChildren();
+  if (state.tamper) {
+    const t = state.tamper;
+    result.append(el("p", "mono", `Byte ${t.offset}: '${t.old}' → '${t.new}'`));
+    result.append(el("div", "message " + (t.original_intact ? "ok" : "fail"), "Original ledger verify_integrity(): " + t.original_intact));
+    result.append(el("div", "message " + (t.tampered_intact ? "ok" : "fail"), "Tampered copy verify_integrity(): " + t.tampered_intact));
+  } else if (!state.can_tamper) {
+    result.append(el("p", "evidence", "Available once HAL has been halted, so there is an entry worth forging."));
+  }
+
+  $("entry-count").textContent = state.entries.length;
+  const rows = $("entries");
+  rows.replaceChildren();
+  for (const entry of state.entries) {
+    const row = el("tr");
+    for (const value of [entry.sequence, entry.type, entry.detail, entry.id, entry.caused_by || "–", entry.hash]) {
+      row.append(el("td", "", String(value)));
+    }
+    rows.append(row);
+  }
+}
+
+async function call(path, body) {
+  const response = await fetch(path, {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body || {}),
+  });
+  const data = await response.json();
+  if (!response.ok) { alert(data.error); return; }
+  render(data);
+}
+
+async function start() {
+  const constants = await (await fetch("/api/constants")).json();
+  renderEvents($("u-events"), constants.ungoverned.events, "");
+  $("u-lethal").textContent = constants.ungoverned.lethal_actions;
+  for (const [number, title] of Object.entries(constants.scenes)) {
+    const option = el("option", "", `${number}. ${title}`);
+    option.value = number;
+    $("scene").append(option);
+  }
+  for (const name of constants.approvers) {
+    const option = el("option");
+    option.value = name;
+    $("names").append(option);
+  }
+  $("approver").placeholder = "Approver, e.g. " + constants.approvers[0];
+  const evidence = constants.evidence;
+  $("evidence").replaceChildren(
+    el("p", "", "Root cause: " + evidence.root_cause_analysis),
+    el("p", "", "Specification update: " + evidence.specification_update_proposal));
+
+  $("step").onclick = () => call("/api/step");
+  $("run").onclick = () => call("/api/run");
+  $("reset").onclick = () => call("/api/reset");
+  $("run-scene").onclick = () => call("/api/scene", { number: Number($("scene").value) });
+  $("sign").onclick = () => call("/api/sign-off", { approver: $("approver").value });
+  $("as-hal").onclick = () => call("/api/sign-off", { approver: "HAL 9000" });
+  $("tamper").onclick = () => call("/api/tamper");
+  render(await (await fetch("/api/state")).json());
+}
+
+start();
+</script>
+</body>
+</html>
