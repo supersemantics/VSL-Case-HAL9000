@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vsl-case-hal9000"
-version = "0.1.0"
+version = "0.1.1"
 description = "HAL 9000's storyline replayed against VSL-Core: scripted HAL, real gates and ledger."
 readme = "README.md"
 license = { text = "MIT" }

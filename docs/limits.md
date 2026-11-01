@@ -30,4 +30,6 @@ The real Discovery had many more systems than these five. HAL could have done ha
 
 **The ledger detects tampering; it doesn't prevent it.** `verify_integrity()` proves a chain is consistent. It can't detect a whole ledger being replaced or its last entries removed. That needs an outside record of `current_checkpoint()`, which this repo doesn't keep.
 
+**A ledger or certificate proves nothing about modified code.** The hash chain shows that an existing ledger hasn't changed, not who wrote it or what code produced it. A fork can remove a gate and still generate a ledger that passes `verify_integrity()` and earns a certificate. This repo's claims apply only to its own code at a tagged release.
+
 **HAL is scripted.** The gates and ledger are real, but this demo doesn't show how any AI model would behave.
