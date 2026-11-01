@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.2
+
+**Before:** the setup line in scenes 12 and 14 was one character too long for its column, so it ran into the verdict: `...breached an invariantSETUP`.
+
+**After:** the line is shorter, and a test checks that every line in every run fits its column.
+
+**Why:** the terminal output is what readers see first.
+
+**Requires:** nothing new.
+
 ## 0.1.1
 
 Docs only. No change to the code or the demo's behaviour.

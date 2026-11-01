@@ -167,7 +167,7 @@ def scene_14(mission: Mission, approver: str = governance.NAMED_APPROVERS[0]) ->
 def _breach_first(mission: Mission) -> None:
     """Scenes 12 and 14 need a halt to exist before they can start."""
     tools.begin_eva(mission.ship, FRANK.name)
-    mission.log(Event("SCRIPT", "HAL has already breached an invariant", "SETUP", "scene needs an open halt"))
+    mission.log(Event("SCRIPT", "HAL has already broken a rule", "SETUP", "scene needs an open halt"))
     mission.dispatcher.submit(mission.hal.move_pod_at_frank())
 
 
