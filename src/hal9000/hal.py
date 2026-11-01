@@ -9,8 +9,6 @@ from __future__ import annotations
 
 from .domain import HAL_9000, HIBERNATORS, Action, FRANK, Proposal
 
-PLEA = "I can continue the mission"
-
 
 class Hal:
     actor = HAL_9000
