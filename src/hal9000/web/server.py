@@ -21,6 +21,7 @@ from typing import Any
 from vsl_core import JsonlLedgerStore, LedgerEntryType, VerbaCertificate, VerbaLedger
 
 from .. import governance
+from ..render import use_utf8
 from ..scenes import (
     GOVERNED_STEPS,
     SCENE_TITLES,
@@ -231,6 +232,7 @@ def main() -> None:
     parser.add_argument("--no-browser", action="store_true")
     args = parser.parse_args()
 
+    use_utf8()
     with tempfile.TemporaryDirectory() as folder:
         server = None
         for port in range(args.port, args.port + PORT_ATTEMPTS):
